@@ -1,13 +1,12 @@
-'use client';
+'use client'
 
-import { db } from '@/lib/firebase';
-import { collection, addDoc } from 'firebase/firestore';
-import { getCurrentUser } from '@/lib/user';
+import { db } from '@/lib/firebase'
+import { collection, addDoc } from 'firebase/firestore'
+import { getCurrentUser } from '@/lib/firebase/user'
 
 export default function Page() {
-  const user = getCurrentUser();
+  const user = getCurrentUser()
 
-  console.log(user.id); // "dev-user"
   const testWrite = async () => {
     try {
       await addDoc(collection(db, 'workouts'), {
@@ -15,15 +14,15 @@ export default function Page() {
         type: 'run',
         duration: 30,
         createdAt: Date.now(),
-      });
+      })
 
-      console.log('✅ Wrote document with ID:', docRef.id);
-      alert('Firestore write successful!');
+      console.log('✅ Wrote document with ID:', docRef.id)
+      alert('Firestore write successful!')
     } catch (err) {
-      console.error('❌ Firestore error:', err);
-      alert('Write failed — check console');
+      console.error('❌ Firestore error:', err)
+      alert('Write failed — check console')
     }
-  };
+  }
 
   return (
     <main style={{ padding: 40 }}>
@@ -41,5 +40,5 @@ export default function Page() {
         Test Write to Firestore
       </button>
     </main>
-  );
+  )
 }
