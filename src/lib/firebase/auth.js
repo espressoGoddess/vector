@@ -11,7 +11,7 @@ export async function sign_in_with_google() {
     {
       display_name: user.displayName,
       email: user.email,
-      photo_url: user.photoURL,
+      photo_url: user.photoURL || '',
       updated_at: serverTimestamp(),
       created_at: serverTimestamp(),
     },
