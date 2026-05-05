@@ -1,6 +1,6 @@
 'use client'
 
-import { db } from '@/lib/firebase'
+import { db } from '@/lib/firebase/firebase'
 import { collection, addDoc } from 'firebase/firestore'
 import { getCurrentUser } from '@/lib/firebase/user'
 
