@@ -21,11 +21,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { format } from 'date-fns'
+import { ChevronDownIcon } from 'lucide-react'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { create_goal } from '@/lib/goals'
 import { use_auth } from '@/lib/firebase/use_auth'
+import { Timestamp } from 'firebase/firestore'
 
 export function AddGoalModal({ onSuccess }) {
-  //@TODO add feedback to user with required properties
   const user = use_auth()
 
   const [open, setOpen] = useState(false)
@@ -33,16 +37,16 @@ export function AddGoalModal({ onSuccess }) {
   const [experienceLevel, setExperienceLevel] = useState('')
   const [notes, setNotes] = useState('')
   const [daysPerWeek, setDaysPerWeek] = useState('')
-  const [targetDate, setTargetDate] = useState('')
+  const [targetDate, setTargetDate] = useState()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [datePopoverOpen, setDatePopoverOpen] = useState(false)
 
   async function addGoal(e) {
     e.preventDefault()
     setHasSubmitted(true)
 
     if (!goalType || !experienceLevel || !daysPerWeek) {
-      console.log(setHasSubmitted)
       return
     }
 
@@ -50,7 +54,7 @@ export function AddGoalModal({ onSuccess }) {
 
     const goal_data = {
       type: goalType,
-      target_date: targetDate || null,
+      target_date: targetDate ? Timestamp.fromDate(targetDate) : null,
       experience_level: experienceLevel,
       days_per_week: Number(daysPerWeek),
       notes: notes || null,
@@ -67,11 +71,12 @@ export function AddGoalModal({ onSuccess }) {
       setExperienceLevel('')
       setDaysPerWeek('')
       setNotes('')
-      setTargetDate('')
+      setTargetDate()
     } catch (err) {
       console.error('Error creating goal:', err)
     } finally {
       setIsSubmitting(false)
+      setHasSubmitted(false)
     }
   }
 
@@ -112,16 +117,40 @@ export function AddGoalModal({ onSuccess }) {
                 <p className="text-sm text-destructive">Goal type is required.</p>
               )}
             </Field>
-
             <Field>
-              <FieldLabel htmlFor="target_date">Target date</FieldLabel>
-              <Input
-                id="target_date"
-                name="target_date"
-                type="date"
-                onChange={(e) => setTargetDate(e.target.value)}
-                value={targetDate}
-              />
+              <FieldLabel>Target date</FieldLabel>
+              <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    data-empty={!targetDate}
+                    className="w-full justify-between text-left data-[empty=true]:text-muted-foreground"
+                  >
+                    {targetDate ? format(targetDate, 'PPP') : <span>Pick a date</span>}
+                    <ChevronDownIcon className="size-4" />
+                  </Button>
+                </PopoverTrigger>
+
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={targetDate}
+                    onSelect={(date) => {
+                      setTargetDate(date)
+                      setDatePopoverOpen(false)
+                    }}
+                    defaultMonth={targetDate}
+                    disabled={(date) => {
+                      const today = new Date()
+                      today.setHours(0, 0, 0, 0)
+
+                      return date < today
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+
               <FieldDescription>
                 Optional, but useful if you&apos;re training for an event.
               </FieldDescription>
@@ -129,7 +158,7 @@ export function AddGoalModal({ onSuccess }) {
 
             <Field>
               <FieldLabel>
-                Experience level<span className="text-destructive">*</span>
+                Experience level <span className="text-destructive">*</span>
               </FieldLabel>
               <Select value={experienceLevel} onValueChange={setExperienceLevel}>
                 <SelectTrigger>

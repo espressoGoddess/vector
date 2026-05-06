@@ -6,6 +6,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import { use_auth } from '@/lib/firebase/use_auth'
 import { Button } from '@/components/ui/button'
+import { format } from 'date-fns'
 import { AddGoalModal } from '@/components/AddGoalModal'
 
 export default function GoalsPage() {
@@ -49,6 +50,15 @@ export default function GoalsPage() {
 
 	if (!user) {
 		return null
+	}
+	function formatFirestoreDate(timestamp) {
+		if (!timestamp) return '—'
+
+		if (timestamp.toDate) {
+			return format(timestamp.toDate(), 'PPP')
+		}
+
+		return String(timestamp)
 	}
 
 	return (
