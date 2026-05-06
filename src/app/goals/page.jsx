@@ -74,7 +74,7 @@ export default function GoalsPage() {
 				<div style={{ marginTop: 20, border: '1px solid #ccc', padding: 20 }}>
 					<h2>{activeGoal.type}</h2>
 					<p>
-						<strong>Target:</strong> {activeGoal.target_date || '—'}
+						<strong>Target:</strong> {formatFirestoreDate(activeGoal.target_date) || '—'}
 					</p>
 					<p>
 						<strong>Experience:</strong> {activeGoal.experience_level || '—'}
