@@ -25,18 +25,26 @@ import { create_goal } from '@/lib/goals'
 import { use_auth } from '@/lib/firebase/use_auth'
 
 export function AddGoalModal({ onSuccess }) {
+  //@TODO add feedback to user with required properties
   const user = use_auth()
 
   const [open, setOpen] = useState(false)
   const [goalType, setGoalType] = useState('')
   const [experienceLevel, setExperienceLevel] = useState('')
   const [notes, setNotes] = useState('')
-  const [daysPerWeek, setDaysPerWeek] = useState(5)
+  const [daysPerWeek, setDaysPerWeek] = useState('')
   const [targetDate, setTargetDate] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
 
   async function addGoal(e) {
     e.preventDefault()
+    setHasSubmitted(true)
+
+    if (!goalType || !experienceLevel || !daysPerWeek) {
+      console.log(setHasSubmitted)
+      return
+    }
 
     if (!user) return
 
@@ -57,10 +65,9 @@ export function AddGoalModal({ onSuccess }) {
       setOpen(false)
       setGoalType('')
       setExperienceLevel('')
-      setDaysPerWeek(5)
+      setDaysPerWeek('')
       setNotes('')
       setTargetDate('')
-      onSuccess()
     } catch (err) {
       console.error('Error creating goal:', err)
     } finally {
@@ -83,7 +90,9 @@ export function AddGoalModal({ onSuccess }) {
 
           <FieldGroup>
             <Field>
-              <FieldLabel>What are you training for?</FieldLabel>
+              <FieldLabel>
+                What are you training for? <span className="text-destructive">*</span>
+              </FieldLabel>
               <Select value={goalType} onValueChange={setGoalType}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select goal type" />
@@ -99,6 +108,9 @@ export function AddGoalModal({ onSuccess }) {
                 </SelectContent>
               </Select>
               <FieldDescription>This helps tailor your training recommendations.</FieldDescription>
+              {hasSubmitted && !goalType && (
+                <p className="text-sm text-destructive">Goal type is required.</p>
+              )}
             </Field>
 
             <Field>
@@ -116,7 +128,9 @@ export function AddGoalModal({ onSuccess }) {
             </Field>
 
             <Field>
-              <FieldLabel>Experience level</FieldLabel>
+              <FieldLabel>
+                Experience level<span className="text-destructive">*</span>
+              </FieldLabel>
               <Select value={experienceLevel} onValueChange={setExperienceLevel}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select experience level" />
@@ -127,10 +141,15 @@ export function AddGoalModal({ onSuccess }) {
                   <SelectItem value="advanced">Advanced</SelectItem>
                 </SelectContent>
               </Select>
+              {hasSubmitted && !experienceLevel && (
+                <p className="text-sm text-destructive">Experience level is required.</p>
+              )}
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="days_per_week">Training days per week</FieldLabel>
+              <FieldLabel htmlFor="days_per_week">
+                Training days per week<span className="text-destructive">*</span>
+              </FieldLabel>
               <Input
                 id="days_per_week"
                 name="days_per_week"
@@ -140,6 +159,9 @@ export function AddGoalModal({ onSuccess }) {
                 value={daysPerWeek}
                 onChange={(e) => setDaysPerWeek(e.target.value)}
               />
+              {hasSubmitted && !daysPerWeek && (
+                <p className="text-sm text-destructive">Training days per week is required.</p>
+              )}
             </Field>
 
             <Field>
@@ -159,7 +181,7 @@ export function AddGoalModal({ onSuccess }) {
               Cancel
             </Button>
 
-            <Button type="submit" disabled={isSubmitting || !goalType}>
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Creating...' : 'Create Goal'}
             </Button>
           </DialogFooter>
