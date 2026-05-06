@@ -8,9 +8,9 @@ import { use_auth } from '@/lib/firebase/use_auth'
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 import { AddGoalModal } from '@/components/AddGoalModal'
+import { endGoal } from '@/lib/goals'
 
 export default function GoalsPage() {
-	//@TODO fetch goal once one is created
 	const user = use_auth()
 	const router = useRouter()
 
@@ -24,6 +24,7 @@ export default function GoalsPage() {
 
 			if (!snapshot.empty) {
 				const goalDoc = snapshot.docs[0]
+				console.log(user)
 				setActiveGoal({ id: goalDoc.id, ...goalDoc.data() })
 			} else {
 				setActiveGoal(null)
@@ -79,8 +80,14 @@ export default function GoalsPage() {
 					<p>
 						<strong>Experience:</strong> {activeGoal.experience_level || '—'}
 					</p>
-					<Button>Edit Goal</Button>
-					<Button style={{ marginLeft: 10 }}>End Goal</Button>
+					<Button variant="outline">Edit Goal</Button>
+					<Button
+						// give user feedback//
+						onClick={() => endGoal(user.uid, activeGoal.id, 'completed')}
+						style={{ marginLeft: 10 }}
+					>
+						End Goal
+					</Button>
 				</div>
 			)}
 		</main>
