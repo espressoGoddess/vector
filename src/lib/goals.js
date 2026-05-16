@@ -1,8 +1,17 @@
 import { db } from '@/lib/firebase/firebase'
-import { addDoc, doc, updateDoc, collection, serverTimestamp } from 'firebase/firestore'
+import {
+  addDoc,
+  doc,
+  updateDoc,
+  collection,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore'
 
-export async function createGoal(user_id, goal_data) {
-  return addDoc(collection(db, 'users', user_id, 'goals'), {
+export async function createGoal(userId, goal_data) {
+  return addDoc(collection(db, 'users', userId, 'goals'), {
     ...goal_data,
     status: 'active',
     started_at: serverTimestamp(),
@@ -11,11 +20,17 @@ export async function createGoal(user_id, goal_data) {
   })
 }
 
-export async function endGoal(user_id, goal_id, status) {
-  const currentGoal = doc(db, 'users', user_id, 'goals', goal_id)
+export async function endGoal(userId, goalId, status) {
+  const currentGoal = doc(db, 'users', userId, 'goals', goalId)
 
   await updateDoc(currentGoal, {
     ended_at: serverTimestamp(),
     status,
   })
+}
+
+export async function getGoals(userId) {
+  const goals = collection(db, 'users', userId, 'goals')
+  const fetchedGoal = query(goals, where('status', '==', 'active'))
+  return await getDocs(fetchedGoal)
 }

@@ -8,7 +8,7 @@ import { use_auth } from '@/lib/firebase/use_auth'
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 import { AddGoalModal } from '@/components/AddGoalModal'
-import { endGoal } from '@/lib/goals'
+import { endGoal, getGoals } from '@/lib/goals'
 
 export default function GoalsPage() {
 	const user = use_auth()
@@ -16,15 +16,13 @@ export default function GoalsPage() {
 
 	const [activeGoal, setActiveGoal] = useState(null)
 	const [loadingGoal, setLoadingGoal] = useState(true)
+
 	async function fetchActiveGoal() {
 		try {
-			const goals_ref = collection(db, 'users', user.uid, 'goals')
-			const q = query(goals_ref, where('status', '==', 'active'))
-			const snapshot = await getDocs(q)
+			const snapshot = await getGoals(user.uid)
 
 			if (!snapshot.empty) {
 				const goalDoc = snapshot.docs[0]
-				console.log(user)
 				setActiveGoal({ id: goalDoc.id, ...goalDoc.data() })
 			} else {
 				setActiveGoal(null)
