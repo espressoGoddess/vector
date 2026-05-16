@@ -59,6 +59,11 @@ export default function GoalsPage() {
 
 		return String(timestamp)
 	}
+	const onEnd = (e) => {
+		e.preventDefault()
+		endGoal(user.uid, activeGoal.id, 'completed')
+		fetchActiveGoal()
+	}
 
 	return (
 		<main style={{ padding: 40 }}>
@@ -81,7 +86,7 @@ export default function GoalsPage() {
 					<Button variant="outline">Edit Goal</Button>
 					<Button
 						// give user feedback//
-						onClick={() => endGoal(user.uid, activeGoal.id, 'completed')}
+						onClick={(e) => onEnd(e)}
 						style={{ marginLeft: 10 }}
 					>
 						End Goal
