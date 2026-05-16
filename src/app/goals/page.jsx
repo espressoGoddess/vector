@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { db } from '@/lib/firebase/firebase'
-import { use_auth } from '@/lib/firebase/use_auth'
-import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
-import { AddGoalModal } from '@/components/AddGoalModal'
+
+import { use_auth } from '@/lib/firebase/use_auth'
 import { endGoal, getGoals } from '@/lib/goals'
+
+import { Button } from '@/components/ui/button'
+import { AddGoalModal } from '@/components/AddGoalModal'
 
 export default function GoalsPage() {
 	const user = use_auth()
@@ -38,16 +39,10 @@ export default function GoalsPage() {
 			router.push('/login')
 			return
 		}
+
 		fetchActiveGoal()
 	}, [user, router])
 
-	if (user === undefined || loadingGoal) {
-		return <main style={{ padding: 40 }}>Loading...</main>
-	}
-
-	if (!user) {
-		return null
-	}
 	function formatFirestoreDate(timestamp) {
 		if (!timestamp) return '—'
 
@@ -57,11 +52,22 @@ export default function GoalsPage() {
 
 		return String(timestamp)
 	}
-	async function onEnd(e) {
+
+	async function handleEndGoal(e) {
 		e.preventDefault()
+
+		if (!user || !activeGoal) return
 
 		await endGoal(user.uid, activeGoal.id, 'completed')
 		await fetchActiveGoal()
+	}
+
+	if (user === undefined || loadingGoal) {
+		return <main style={{ padding: 40 }}>Loading...</main>
+	}
+
+	if (!user) {
+		return null
 	}
 
 	return (
@@ -71,25 +77,39 @@ export default function GoalsPage() {
 			{!activeGoal ? (
 				<div style={{ marginTop: 20 }}>
 					<p>You don’t have an active goal yet.</p>
-					<AddGoalModal onSuccess={fetchActiveGoal} />
+
+					<AddGoalModal mode="create" onSuccess={fetchActiveGoal} />
 				</div>
 			) : (
 				<div style={{ marginTop: 20, border: '1px solid #ccc', padding: 20 }}>
-					<h2>{activeGoal.type}</h2>
+					<h2>
+						<strong>Goal</strong>: {activeGoal.type}
+					</h2>
 					<p>
-						<strong>Target:</strong> {formatFirestoreDate(activeGoal.target_date) || '—'}
+						<strong>Target Date:</strong> {formatFirestoreDate(activeGoal.target_date)}
 					</p>
+
 					<p>
 						<strong>Experience:</strong> {activeGoal.experience_level || '—'}
 					</p>
-					<Button variant="outline">Edit Goal</Button>
-					<Button
-						// give user feedback//
-						onClick={(e) => onEnd(e)}
-						style={{ marginLeft: 10 }}
-					>
-						End Goal
-					</Button>
+
+					<p>
+						<strong>Training days per week:</strong> {activeGoal.days_per_week || '—'}
+					</p>
+
+					{activeGoal.notes && (
+						<p>
+							<strong>Notes:</strong> {activeGoal.notes}
+						</p>
+					)}
+
+					<div style={{ marginTop: 16 }}>
+						<AddGoalModal mode="edit" goal={activeGoal} onSuccess={fetchActiveGoal} />
+
+						<Button onClick={handleEndGoal} style={{ marginLeft: 10 }}>
+							End Goal
+						</Button>
+					</div>
 				</div>
 			)}
 		</main>
