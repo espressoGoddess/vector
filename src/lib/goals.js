@@ -32,5 +32,13 @@ export async function endGoal(userId, goalId, status) {
 export async function getGoals(userId) {
   const goals = collection(db, 'users', userId, 'goals')
   const fetchedGoal = query(goals, where('status', '==', 'active'))
-  return await getDocs(fetchedGoal)
+  const snapshot = await getDocs(fetchedGoal)
+  if (snapshot.empty) return null
+
+  const goalDoc = snapshot.docs[0]
+
+  return {
+    id: goalDoc.id,
+    ...goalDoc.data(),
+  }
 }

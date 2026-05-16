@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import { use_auth } from '@/lib/firebase/use_auth'
 import { Button } from '@/components/ui/button'
@@ -18,21 +17,20 @@ export default function GoalsPage() {
 	const [loadingGoal, setLoadingGoal] = useState(true)
 
 	async function fetchActiveGoal() {
-		try {
-			const snapshot = await getGoals(user.uid)
+		if (!user) return
 
-			if (!snapshot.empty) {
-				const goalDoc = snapshot.docs[0]
-				setActiveGoal({ id: goalDoc.id, ...goalDoc.data() })
-			} else {
-				setActiveGoal(null)
-			}
+		try {
+			setLoadingGoal(true)
+
+			const goal = await getGoals(user.uid)
+			setActiveGoal(goal)
 		} catch (err) {
 			console.error('Error fetching active goal:', err)
 		} finally {
 			setLoadingGoal(false)
 		}
 	}
+
 	useEffect(() => {
 		if (user === undefined) return
 
@@ -59,10 +57,11 @@ export default function GoalsPage() {
 
 		return String(timestamp)
 	}
-	const onEnd = (e) => {
+	async function onEnd(e) {
 		e.preventDefault()
-		endGoal(user.uid, activeGoal.id, 'completed')
-		fetchActiveGoal()
+
+		await endGoal(user.uid, activeGoal.id, 'completed')
+		await fetchActiveGoal()
 	}
 
 	return (
