@@ -6,9 +6,21 @@ import { format } from 'date-fns'
 
 import { use_auth } from '@/lib/firebase/use_auth'
 import { endGoal, getGoals } from '@/lib/goals'
+import { AddGoalModal } from '@/components/AddGoalModal'
 
 import { Button } from '@/components/ui/button'
-import { AddGoalModal } from '@/components/AddGoalModal'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog'
+import { Field, FieldGroup } from '@/components/ui/field'
 
 export default function GoalsPage() {
 	const user = use_auth()
@@ -66,7 +78,7 @@ export default function GoalsPage() {
 	}
 
 	if (user === undefined || loadingGoal) {
-		return <main style={{ padding: 40 }}>Loading...</main>
+		return <main className="pt-20">Loading...</main>
 	}
 
 	if (!user) {
@@ -85,7 +97,8 @@ export default function GoalsPage() {
 							<strong>Date Started:</strong> {formatFirestoreDate(goal.created_at)}
 						</p>
 						<p>
-							<strong>Date Completed:</strong> {formatFirestoreDate(goal.ended_at)}
+							<strong>Date {goal.status === 'completed' ? 'Completed' : 'Ended'}:</strong>{' '}
+							{formatFirestoreDate(goal.ended_at)}
 						</p>
 						{goal.notes && (
 							<p>
@@ -104,9 +117,12 @@ export default function GoalsPage() {
 
 			{!activeGoal ? (
 				<Card className="w-full max-w-sm mt-4">
-					<CardHeader>You don’t have an active goal yet.</CardHeader>
-
-					<AddGoalModal mode="create" onSuccess={fetchGoals} />
+					<CardHeader>
+						<CardTitle>You don’t have an active goal yet.</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<AddGoalModal mode="create" onSuccess={fetchGoals} />
+					</CardContent>
 				</Card>
 			) : (
 				<Card className="w-full max-w-sm mt-4">
@@ -144,7 +160,7 @@ export default function GoalsPage() {
 			)}
 			{oldGoals.length && (
 				<div>
-					<h2 className="text-xl m-6">Completed Goals</h2>
+					<h2 className="text-xl m-6">Finished Goals</h2>
 					{goals()}
 				</div>
 			)}
