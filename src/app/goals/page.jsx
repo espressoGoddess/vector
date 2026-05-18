@@ -190,7 +190,7 @@ export default function GoalsPage() {
 			)}
 			{oldGoals.length && (
 				<div>
-					<h2 className="text-xl m-6">Finished Goals</h2>
+					<h2 className="text-xl m-6">Past Goals</h2>
 					{goals()}
 				</div>
 			)}
