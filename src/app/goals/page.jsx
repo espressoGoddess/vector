@@ -16,16 +16,18 @@ export default function GoalsPage() {
 
 	const [activeGoal, setActiveGoal] = useState(null)
 	const [loadingGoal, setLoadingGoal] = useState(true)
-	const [oldGoals, setOldGoals] = useState(null)
+	const [oldGoals, setOldGoals] = useState([])
 
-	async function fetchActiveGoal() {
+	async function fetchGoals() {
 		if (!user) return
 
 		try {
 			setLoadingGoal(true)
 
-			const goal = await getGoals(user.uid, 'active')
-			setActiveGoal(goal)
+			const currentGoal = await getGoals(user.uid, 'active')
+			setActiveGoal(currentGoal)
+			const completedGoals = await getGoals(user.uid, 'completed')
+			setOldGoals(completedGoals)
 		} catch (err) {
 			console.error('Error fetching active goal:', err)
 		} finally {
@@ -41,7 +43,7 @@ export default function GoalsPage() {
 			return
 		}
 
-		fetchActiveGoal()
+		fetchGoals()
 	}, [user, router])
 
 	function formatFirestoreDate(timestamp) {
@@ -60,7 +62,7 @@ export default function GoalsPage() {
 		if (!user || !activeGoal) return
 
 		await endGoal(user.uid, activeGoal.id, 'completed')
-		await fetchActiveGoal()
+		await fetchGoals()
 	}
 
 	if (user === undefined || loadingGoal) {
@@ -71,46 +73,79 @@ export default function GoalsPage() {
 		return null
 	}
 
+	const goals = () => {
+		return oldGoals.map((goal) => {
+			return (
+				<Card className="w-full max-w-sm mt-4" key={goal.id}>
+					<CardHeader>
+						<CardTitle>Goal: {goal.type}</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<p>
+							<strong>Date Started:</strong> {formatFirestoreDate(goal.created_at)}
+						</p>
+						<p>
+							<strong>Date Completed:</strong> {formatFirestoreDate(goal.ended_at)}
+						</p>
+						{goal.notes && (
+							<p>
+								<strong>Notes:</strong> {goal.notes}
+							</p>
+						)}
+					</CardContent>
+				</Card>
+			)
+		})
+	}
+
 	return (
-		<main style={{ padding: 40 }}>
-			<h1>Goals</h1>
+		<main className="p-12">
+			<h1 className="mt-8 ml-8 text-xl">Goals</h1>
 
 			{!activeGoal ? (
-				<div style={{ marginTop: 20 }}>
-					<p>You don’t have an active goal yet.</p>
+				<Card className="w-full max-w-sm mt-4">
+					<CardHeader>You don’t have an active goal yet.</CardHeader>
 
-					<AddGoalModal mode="create" onSuccess={fetchActiveGoal} />
-				</div>
+					<AddGoalModal mode="create" onSuccess={fetchGoals} />
+				</Card>
 			) : (
-				<div style={{ marginTop: 20, border: '1px solid #ccc', padding: 20 }}>
-					<h2>
-						<strong>Goal</strong>: {activeGoal.type}
-					</h2>
-					<p>
-						<strong>Target Date:</strong> {formatFirestoreDate(activeGoal.target_date)}
-					</p>
-
-					<p>
-						<strong>Experience:</strong> {activeGoal.experience_level || '—'}
-					</p>
-
-					<p>
-						<strong>Training days per week:</strong> {activeGoal.days_per_week || '—'}
-					</p>
-
-					{activeGoal.notes && (
+				<Card className="w-full max-w-sm mt-4">
+					<CardHeader>
+						<CardTitle>Goal: {activeGoal.type}</CardTitle>
+					</CardHeader>
+					<CardContent>
 						<p>
-							<strong>Notes:</strong> {activeGoal.notes}
+							<strong>Target Date:</strong> {formatFirestoreDate(activeGoal.target_date)}
 						</p>
-					)}
 
-					<div style={{ marginTop: 16 }}>
-						<AddGoalModal mode="edit" goal={activeGoal} onSuccess={fetchActiveGoal} />
+						<p>
+							<strong>Experience:</strong> {activeGoal.experience_level || '—'}
+						</p>
+
+						<p>
+							<strong>Training days per week:</strong> {activeGoal.days_per_week || '—'}
+						</p>
+
+						{activeGoal.notes && (
+							<p>
+								<strong>Notes:</strong> {activeGoal.notes}
+							</p>
+						)}
+					</CardContent>
+
+					<CardFooter>
+						<AddGoalModal mode="edit" goal={activeGoal} onSuccess={fetchGoals} />
 
 						<Button onClick={handleEndGoal} style={{ marginLeft: 10 }}>
 							End Goal
 						</Button>
-					</div>
+					</CardFooter>
+				</Card>
+			)}
+			{oldGoals.length && (
+				<div>
+					<h2 className="text-xl m-6">Completed Goals</h2>
+					{goals()}
 				</div>
 			)}
 		</main>

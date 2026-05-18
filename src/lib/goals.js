@@ -29,13 +29,19 @@ export async function getGoals(userId, type) {
   const snapshot = await getDocs(goalQuery)
 
   if (snapshot.empty) return null
+  if (type === 'active') {
+    const goalDoc = snapshot.docs[0]
 
-  const goalDoc = snapshot.docs[0]
-
-  return {
-    id: goalDoc.id,
-    ...goalDoc.data(),
+    return {
+      id: goalDoc.id,
+      ...goalDoc.data(),
+    }
   }
+  const goalDoc = snapshot.docs
+  return goalDoc.map((goal) => ({
+    id: goal.id,
+    ...goal.data(),
+  }))
 }
 
 export async function editGoal(userId, goalId, goalData) {
