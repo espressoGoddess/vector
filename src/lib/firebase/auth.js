@@ -1,6 +1,6 @@
 import { signInWithPopup, signOut } from 'firebase/auth'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
-import { auth, db, google_provider } from '@/lib/firebase'
+import { auth, db, google_provider } from '@/lib/firebase/firebase'
 
 export async function sign_in_with_google() {
   const result = await signInWithPopup(auth, google_provider)
