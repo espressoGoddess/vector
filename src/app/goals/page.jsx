@@ -16,6 +16,7 @@ export default function GoalsPage() {
 
 	const [activeGoal, setActiveGoal] = useState(null)
 	const [loadingGoal, setLoadingGoal] = useState(true)
+	const [oldGoals, setOldGoals] = useState(null)
 
 	async function fetchActiveGoal() {
 		if (!user) return
@@ -23,7 +24,7 @@ export default function GoalsPage() {
 		try {
 			setLoadingGoal(true)
 
-			const goal = await getGoals(user.uid)
+			const goal = await getGoals(user.uid, 'active')
 			setActiveGoal(goal)
 		} catch (err) {
 			console.error('Error fetching active goal:', err)
