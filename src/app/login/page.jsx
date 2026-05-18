@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation'
 import { sign_in_with_google } from '@/lib/firebase/auth'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 
 export default function LoginPage() {
   const router = useRouter()
