@@ -25,7 +25,7 @@ export async function createGoal(userId, goalData) {
 
 export async function getGoals(userId, type) {
   const goalsRef = collection(db, 'users', userId, 'goals')
-  const goalQuery = query(goalsRef, where('status', '==', type))
+  const goalQuery = query(goalsRef, where('status', type === 'active' ? '==' : '!=', 'active'))
   const snapshot = await getDocs(goalQuery)
 
   if (snapshot.empty) return null
@@ -53,11 +53,11 @@ export async function editGoal(userId, goalId, goalData) {
   })
 }
 
-export async function endGoal(userId, goalId, status = 'completed') {
+export async function endGoal(userId, goalId, status) {
   const goalRef = doc(db, 'users', userId, 'goals', goalId)
 
   return updateDoc(goalRef, {
-    status,
+    status: status,
     ended_at: serverTimestamp(),
     updated_at: serverTimestamp(),
   })

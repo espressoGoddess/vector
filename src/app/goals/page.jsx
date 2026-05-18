@@ -68,12 +68,11 @@ export default function GoalsPage() {
 		return String(timestamp)
 	}
 
-	async function handleEndGoal(e) {
+	async function handleEndGoal(e, status) {
 		e.preventDefault()
 
 		if (!user || !activeGoal) return
-
-		await endGoal(user.uid, activeGoal.id, 'completed')
+		await endGoal(user.uid, activeGoal.id, status)
 		await fetchGoals()
 	}
 
@@ -151,10 +150,41 @@ export default function GoalsPage() {
 
 					<CardFooter>
 						<AddGoalModal mode="edit" goal={activeGoal} onSuccess={fetchGoals} />
-
-						<Button onClick={handleEndGoal} style={{ marginLeft: 10 }}>
-							End Goal
-						</Button>
+						<Dialog>
+							<DialogTrigger asChild>
+								<Button variant="outline" className="ml-4">
+									End Goal
+								</Button>
+							</DialogTrigger>
+							<DialogContent className="sm:max-w-sm">
+								<DialogHeader>
+									<DialogTitle>Did you complete this goal?</DialogTitle>
+								</DialogHeader>
+								<FieldGroup>
+									<Button
+										onClick={(e) => {
+											handleEndGoal(e, 'completed')
+										}}
+										className="ml-8"
+									>
+										Yes
+									</Button>
+									<Button
+										onClick={(e) => {
+											handleEndGoal(e, 'inactive')
+										}}
+										className="ml-8"
+									>
+										No
+									</Button>
+								</FieldGroup>
+								<DialogFooter>
+									<DialogClose asChild>
+										<Button variant="outline">Cancel</Button>
+									</DialogClose>
+								</DialogFooter>
+							</DialogContent>
+						</Dialog>
 					</CardFooter>
 				</Card>
 			)}
