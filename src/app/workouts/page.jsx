@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/firebase/useAuth'
+import { LogWorkoutModal } from '@/components/LogWorkoutModal'
 
 export default function Page() {
 	const user = useAuth()
@@ -31,6 +32,7 @@ export default function Page() {
 	return (
 		<div className="p-12">
 			<h1 className="mt-8 ml-8 text-xl">Workouts</h1>
+			<LogWorkoutModal mode="create" />
 		</div>
 	)
 }
