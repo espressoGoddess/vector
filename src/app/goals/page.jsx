@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 
-import { use_auth } from '@/lib/firebase/use_auth'
+import { useAuth } from '@/lib/firebase/useAuth'
 import { endGoal, getGoals } from '@/lib/goals'
 import { AddGoalModal } from '@/components/AddGoalModal'
 
@@ -23,7 +23,7 @@ import {
 import { Field, FieldGroup } from '@/components/ui/field'
 
 export default function GoalsPage() {
-	const user = use_auth()
+	const user = useAuth()
 	const router = useRouter()
 
 	const [activeGoal, setActiveGoal] = useState(null)
