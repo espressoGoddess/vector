@@ -36,7 +36,12 @@ import {
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
-export function LogWorkoutModal({ mode = 'create', workout = null, activeGoalId = null }) {
+export function LogWorkoutModal({
+	onSuccess,
+	mode = 'create',
+	workout = null,
+	activeGoalId = null,
+}) {
 	const user = useAuth()
 
 	const isEdit = mode === 'edit'
@@ -117,12 +122,9 @@ export function LogWorkoutModal({ mode = 'create', workout = null, activeGoalId 
 				console.log('edit workout', user.uid, workout.id, workoutData)
 			} else {
 				await createWorkout(user.uid, activeGoalId || null, workoutData)
-				console.log('create workout', user.uid, activeGoalId || null, workoutData)
 			}
 
-			// if (onSuccess) {
-			// 	await onSuccess()
-			// }
+			await onSuccess()
 
 			setOpen(false)
 			resetForm()
