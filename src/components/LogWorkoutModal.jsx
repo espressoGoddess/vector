@@ -6,7 +6,7 @@ import { ChevronDownIcon } from 'lucide-react'
 import { Timestamp } from 'firebase/firestore'
 
 import { useAuth } from '@/lib/firebase/useAuth'
-// import { createWorkout, editWorkout } from '@/lib/workouts'
+import { createWorkout } from '@/lib/workouts'
 
 import { Button } from '@/components/ui/button'
 
@@ -36,7 +36,7 @@ import {
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
-export function LogWorkoutModal({ onSuccess, mode = 'create', workout = null, activeGoal = null }) {
+export function LogWorkoutModal({ mode = 'create', workout = null, activeGoalId = null }) {
 	const user = useAuth()
 
 	const isEdit = mode === 'edit'
@@ -96,7 +96,7 @@ export function LogWorkoutModal({ onSuccess, mode = 'create', workout = null, ac
 		if (!user) return
 
 		const workoutData = {
-			goal_id: activeGoal?.id || workout?.goal_id || null,
+			goal_id: activeGoalId || workout?.goal_id || null,
 			type: workoutType,
 			status: 'completed',
 			scheduled_for: null,
@@ -116,13 +116,13 @@ export function LogWorkoutModal({ onSuccess, mode = 'create', workout = null, ac
 				// await editWorkout(user.uid, workout.id, workoutData)
 				console.log('edit workout', user.uid, workout.id, workoutData)
 			} else {
-				// await createWorkout(user.uid, activeGoal?.id || null, workoutData)
-				console.log('create workout', user.uid, activeGoal?.id || null, workoutData)
+				await createWorkout(user.uid, activeGoalId || null, workoutData)
+				console.log('create workout', user.uid, activeGoalId || null, workoutData)
 			}
 
-			if (onSuccess) {
-				await onSuccess()
-			}
+			// if (onSuccess) {
+			// 	await onSuccess()
+			// }
 
 			setOpen(false)
 			resetForm()

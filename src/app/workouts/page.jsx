@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/firebase/useAuth'
 import { LogWorkoutModal } from '@/components/LogWorkoutModal'
+import { getGoals } from '@/lib/goals'
 
 export default function Page() {
 	const user = useAuth()
@@ -11,6 +12,13 @@ export default function Page() {
 
 	const [loadingWorkouts, setLoadingWorkouts] = useState(true)
 	const [pastWorkouts, setPastWorkouts] = useState(null)
+	const [activeGoalId, setActiveGoalId] = useState(null)
+
+	async function getGoalId() {
+		if (!user) return
+		const goal = await getGoals(user.uid, 'active')
+		setActiveGoalId(goal?.id || null)
+	}
 
 	useEffect(() => {
 		if (user === undefined) return
@@ -20,6 +28,7 @@ export default function Page() {
 			return
 		}
 
+		getGoalId()
 		setLoadingWorkouts(false)
 	}, [user, router])
 
@@ -32,7 +41,7 @@ export default function Page() {
 	return (
 		<div className="p-12">
 			<h1 className="mt-8 ml-8 text-xl">Workouts</h1>
-			<LogWorkoutModal mode="create" />
+			<LogWorkoutModal mode="create" goal={activeGoalId} />
 		</div>
 	)
 }
