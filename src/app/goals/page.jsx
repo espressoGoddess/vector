@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { format } from 'date-fns'
 
 import { useAuth } from '@/lib/firebase/useAuth'
 import { endGoal, getGoals } from '@/lib/goals'
+import { formatDate } from '@/lib/utils'
 import { AddGoalModal } from '@/components/AddGoalModal'
 
 import { Button } from '@/components/ui/button'
@@ -58,16 +58,6 @@ export default function GoalsPage() {
 		fetchGoals()
 	}, [user, router])
 
-	function formatFirestoreDate(timestamp) {
-		if (!timestamp) return '—'
-
-		if (timestamp.toDate) {
-			return format(timestamp.toDate(), 'PPP')
-		}
-
-		return String(timestamp)
-	}
-
 	async function handleEndGoal(e, status) {
 		e.preventDefault()
 
@@ -93,11 +83,11 @@ export default function GoalsPage() {
 					</CardHeader>
 					<CardContent>
 						<p>
-							<strong>Date Started:</strong> {formatFirestoreDate(goal.created_at)}
+							<strong>Date Started:</strong> {formatDate(goal.created_at)}
 						</p>
 						<p>
 							<strong>Date {goal.status === 'completed' ? 'Completed' : 'Ended'}:</strong>{' '}
-							{formatFirestoreDate(goal.ended_at)}
+							{formatDate(goal.ended_at)}
 						</p>
 						{goal.notes && (
 							<p>
@@ -130,7 +120,7 @@ export default function GoalsPage() {
 					</CardHeader>
 					<CardContent>
 						<p>
-							<strong>Target Date:</strong> {formatFirestoreDate(activeGoal.target_date)}
+							<strong>Target Date:</strong> {formatDate(activeGoal.target_date)}
 						</p>
 
 						<p>
