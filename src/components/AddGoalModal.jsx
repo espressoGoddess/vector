@@ -5,7 +5,7 @@ import { format } from 'date-fns'
 import { ChevronDownIcon } from 'lucide-react'
 import { Timestamp } from 'firebase/firestore'
 
-import { use_auth } from '@/lib/firebase/use_auth'
+import { useAuth } from '@/lib/firebase/useAuth'
 import { createGoal, editGoal } from '@/lib/goals'
 
 import { Button } from '@/components/ui/button'
@@ -38,7 +38,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 export function AddGoalModal({ onSuccess, mode = 'create', goal = null }) {
-  const user = use_auth()
+  const user = useAuth()
 
   const isEdit = mode === 'edit'
 
