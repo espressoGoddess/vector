@@ -8,7 +8,6 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -50,9 +49,13 @@ export default function Page() {
 			return
 		}
 
-		getGoalId()
-		fetchWorkouts()
-		setLoadingWorkouts(false)
+		async function loadData() {
+			await getGoalId()
+			await fetchWorkouts()
+			setLoadingWorkouts(false)
+		}
+
+		loadData()
 	}, [user, router])
 
 	async function handleDeleteWorkout(e, workoutId) {
@@ -101,7 +104,7 @@ export default function Page() {
 							onSuccess={fetchWorkouts}
 							mode="edit"
 							workout={workout}
-							goal={activeGoalId}
+							activeGoalId={activeGoalId}
 						/>
 						<Dialog>
 							<DialogTrigger asChild>
@@ -145,7 +148,7 @@ export default function Page() {
 			) : (
 				<div>
 					<div className="m-10">
-						<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" goal={activeGoalId} />
+						<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" activeGoalId={activeGoalId} />
 					</div>
 					<div>
 						<h2 className="text-xl m-6">Logged Workouts</h2>

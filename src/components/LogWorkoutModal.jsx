@@ -117,9 +117,8 @@ export function LogWorkoutModal({
 
 			if (isEdit) {
 				await editWorkout(user.uid, workout.id, workoutData)
-				console.log('edit workout', user.uid, workout.id, workoutData)
 			} else {
-				await createWorkout(user.uid, activeGoalId || null, workoutData)
+				await createWorkout(user.uid, workoutData)
 			}
 
 			await onSuccess()
@@ -136,7 +135,7 @@ export function LogWorkoutModal({
 
 	function resetForm() {
 		setWorkoutType('')
-		setCompletedAt(new Date())
+		setCompletedAt('')
 		setDurationMinutes('')
 		setDistanceMiles('')
 		setIntensity('')

@@ -11,11 +11,10 @@ import {
 	deleteDoc,
 } from 'firebase/firestore'
 
-export async function createWorkout(userId, goalId, workoutData) {
+export async function createWorkout(userId, workoutData) {
 	const workoutRef = collection(db, 'users', userId, 'workouts')
 
 	return await addDoc(workoutRef, {
-		goal_id: goalId || null,
 		...workoutData,
 		source: workoutData.source || 'manual',
 		created_at: serverTimestamp(),
