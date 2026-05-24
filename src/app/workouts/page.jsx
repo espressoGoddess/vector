@@ -141,14 +141,16 @@ export default function Page() {
 					<CardHeader>
 						<CardTitle>You haven't logged any workouts yet.</CardTitle>
 					</CardHeader>
-					<CardContent>
-						<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" goal={activeGoalId} />
-					</CardContent>
 				</Card>
 			) : (
 				<div>
-					<h2 className="text-xl m-6">Logged Workouts</h2>
-					{renderWorkouts()}
+					<div className="m-10">
+						<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" goal={activeGoalId} />
+					</div>
+					<div>
+						<h2 className="text-xl m-6">Logged Workouts</h2>
+						{renderWorkouts()}
+					</div>
 				</div>
 			)}
 		</div>

@@ -41,3 +41,12 @@ export async function deleteWorkout(userId, workoutId) {
 
 	await deleteDoc(workoutRef)
 }
+
+export async function editWorkout(userId, workoutId, workoutData) {
+	const workoutRef = doc(db, 'users', userId, 'workouts', workoutId)
+
+	return updateDoc(workoutRef, {
+		...workoutData,
+		updated_at: serverTimestamp(),
+	})
+}

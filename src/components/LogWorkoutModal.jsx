@@ -6,7 +6,7 @@ import { ChevronDownIcon } from 'lucide-react'
 import { Timestamp } from 'firebase/firestore'
 
 import { useAuth } from '@/lib/firebase/useAuth'
-import { createWorkout } from '@/lib/workouts'
+import { createWorkout, editWorkout } from '@/lib/workouts'
 
 import { Button } from '@/components/ui/button'
 
@@ -50,11 +50,9 @@ export function LogWorkoutModal({
 
 	const [workoutType, setWorkoutType] = useState('')
 	const [completedAt, setCompletedAt] = useState(new Date())
-
 	const [durationMinutes, setDurationMinutes] = useState('')
 	const [distanceMiles, setDistanceMiles] = useState('')
 	const [intensity, setIntensity] = useState('')
-
 	const [feelLabel, setFeelLabel] = useState('')
 	const [notes, setNotes] = useState('')
 
@@ -118,7 +116,7 @@ export function LogWorkoutModal({
 			setIsSubmitting(true)
 
 			if (isEdit) {
-				// await editWorkout(user.uid, workout.id, workoutData)
+				await editWorkout(user.uid, workout.id, workoutData)
 				console.log('edit workout', user.uid, workout.id, workoutData)
 			} else {
 				await createWorkout(user.uid, activeGoalId || null, workoutData)
