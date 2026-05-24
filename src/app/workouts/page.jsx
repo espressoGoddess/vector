@@ -112,7 +112,7 @@ export default function Page() {
 									Delete Workout
 								</Button>
 							</DialogTrigger>
-							<DialogContent className="sm:max-w-sm">
+							<DialogContent className="sm:max-w-sm" key={workout.id}>
 								<DialogHeader>
 									<DialogTitle>Are you sure you want to delete this workout?</DialogTitle>
 								</DialogHeader>
