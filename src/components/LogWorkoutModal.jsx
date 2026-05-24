@@ -49,7 +49,7 @@ export function LogWorkoutModal({
 	const [open, setOpen] = useState(false)
 
 	const [workoutType, setWorkoutType] = useState('')
-	const [completedAt, setCompletedAt] = useState(new Date())
+	const [completedAt, setCompletedAt] = useState('')
 	const [durationMinutes, setDurationMinutes] = useState('')
 	const [distanceMiles, setDistanceMiles] = useState('')
 	const [intensity, setIntensity] = useState('')
