@@ -95,8 +95,16 @@ export default function Page() {
 	return (
 		<div className="p-12">
 			<h1 className="mt-8 ml-8 text-xl">Workouts</h1>
-			<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" goal={activeGoalId} />
-			{pastWorkouts.length && (
+			{!pastWorkouts.length ? (
+				<Card className="w-full max-w-sm mt-4">
+					<CardHeader>
+						<CardTitle>You haven't logged any workouts yet.</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" goal={activeGoalId} />
+					</CardContent>
+				</Card>
+			) : (
 				<div>
 					<h2 className="text-xl m-6">Logged Workouts</h2>
 					{renderWorkouts()}
