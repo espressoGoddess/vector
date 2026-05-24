@@ -1,16 +1,26 @@
 'use client'
-// @TODO FETCH WORKOUTS AFTER LOGGING ONE
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/firebase/useAuth'
 
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+	DialogClose,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { FieldGroup } from '@/components/ui/field'
 
 import { LogWorkoutModal } from '@/components/LogWorkoutModal'
 import { getGoals } from '@/lib/goals'
 import { formatDate } from '@/lib/utils'
-import { getWorkouts } from '@/lib/workouts'
+import { getWorkouts, deleteWorkout } from '@/lib/workouts'
 
 export default function Page() {
 	const user = useAuth()
@@ -44,6 +54,11 @@ export default function Page() {
 		fetchWorkouts()
 		setLoadingWorkouts(false)
 	}, [user, router])
+
+	async function handleDeleteWorkout(e, workoutId) {
+		await deleteWorkout(user.uid, workoutId)
+		await fetchWorkouts()
+	}
 
 	const renderWorkouts = () => {
 		return pastWorkouts.map((workout) => {
@@ -81,6 +96,32 @@ export default function Page() {
 							</p>
 						)}
 					</CardContent>
+					<CardFooter>
+						<LogWorkoutModal
+							onSuccess={fetchWorkouts}
+							mode="edit"
+							workout={workout}
+							goal={activeGoalId}
+						/>
+						<Dialog>
+							<DialogTrigger asChild>
+								<Button variant="outline" className="ml-4">
+									Delete Workout
+								</Button>
+							</DialogTrigger>
+							<DialogContent className="sm:max-w-sm">
+								<DialogHeader>
+									<DialogTitle>Are you sure you want to delete this workout?</DialogTitle>
+								</DialogHeader>
+								<FieldGroup>
+									<Button onClick={(e) => handleDeleteWorkout(e, workout.id)}>Yes</Button>
+									<DialogClose asChild>
+										<Button variant="outline">No</Button>
+									</DialogClose>
+								</FieldGroup>
+							</DialogContent>
+						</Dialog>
+					</CardFooter>
 				</Card>
 			)
 		})

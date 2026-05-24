@@ -8,6 +8,7 @@ import {
 	serverTimestamp,
 	updateDoc,
 	where,
+	deleteDoc,
 } from 'firebase/firestore'
 
 export async function createWorkout(userId, goalId, workoutData) {
@@ -29,4 +30,14 @@ export async function getWorkouts(userId) {
 		id: workoutDoc.id,
 		...workoutDoc.data(),
 	}))
+}
+
+export async function deleteWorkout(userId, workoutId) {
+	if (!userId || !workoutId) {
+		throw new Error('Missing userId or workoutId')
+	}
+
+	const workoutRef = doc(db, 'users', userId, 'workouts', workoutId)
+
+	await deleteDoc(workoutRef)
 }
