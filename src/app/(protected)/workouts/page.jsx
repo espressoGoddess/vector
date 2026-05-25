@@ -1,8 +1,9 @@
 'use client'
+//@TODO check the goal start date, only attach workout with same or more recent date to it
+//@TODO edit goal capability
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/lib/firebase/useAuth'
+import { useUser } from '@/lib/UserContext'
 
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import {
@@ -22,43 +23,35 @@ import { formatDate } from '@/lib/utils'
 import { getWorkouts, deleteWorkout } from '@/lib/workouts'
 
 export default function Page() {
-	const user = useAuth()
-	const router = useRouter()
+	const user = useUser()
 
 	const [loadingWorkouts, setLoadingWorkouts] = useState(true)
 	const [pastWorkouts, setPastWorkouts] = useState([])
 	const [activeGoalId, setActiveGoalId] = useState(null)
 
-	async function getGoalId() {
-		if (!user) return
+	async function fetchActiveGoalId() {
 		const goal = await getGoals(user.uid, 'active')
 		setActiveGoalId(goal?.id || null)
 	}
 
 	async function fetchWorkouts() {
-		if (!user) return
 		const workouts = await getWorkouts(user.uid)
 		setPastWorkouts(workouts)
 	}
 
 	useEffect(() => {
-		if (user === undefined) return
-
-		if (!user) {
-			router.push('/login')
-			return
-		}
+		if (!user) return
 
 		async function loadData() {
-			await getGoalId()
+			await fetchActiveGoalId()
 			await fetchWorkouts()
 			setLoadingWorkouts(false)
 		}
 
 		loadData()
-	}, [user, router])
+	}, [user?.uid])
 
-	async function handleDeleteWorkout(e, workoutId) {
+	async function handleDeleteWorkout(workoutId) {
 		await deleteWorkout(user.uid, workoutId)
 		await fetchWorkouts()
 	}
@@ -66,7 +59,7 @@ export default function Page() {
 	const renderWorkouts = () => {
 		return pastWorkouts.map((workout) => {
 			return (
-				<Card className="w-full max-w-sm mt-4" key={workout.id}>
+				<Card className="w-fit max-w-sm mt-4" key={workout.id}>
 					<CardHeader>
 						<CardTitle>Workout: {workout.type}</CardTitle>
 					</CardHeader>
@@ -75,9 +68,11 @@ export default function Page() {
 						<p>
 							<strong>Status:</strong> {workout.status}
 						</p>
+
 						<p>
 							<strong>Completed:</strong> {formatDate(workout.completed_at)}
 						</p>
+
 						<p>
 							<strong>Duration:</strong> {workout.duration_minutes} min
 						</p>
@@ -87,18 +82,22 @@ export default function Page() {
 								<strong>Distance:</strong> {workout.distance_miles} miles
 							</p>
 						)}
+
 						<p>
 							<strong>Intensity:</strong> {workout.intensity}/10
 						</p>
+
 						<p>
 							<strong>Felt:</strong> {workout.feel_label}
 						</p>
+
 						{workout.notes && (
 							<p>
 								<strong>Notes:</strong> {workout.notes}
 							</p>
 						)}
 					</CardContent>
+
 					<CardFooter>
 						<LogWorkoutModal
 							onSuccess={fetchWorkouts}
@@ -106,18 +105,22 @@ export default function Page() {
 							workout={workout}
 							activeGoalId={activeGoalId}
 						/>
+
 						<Dialog>
 							<DialogTrigger asChild>
 								<Button variant="outline" className="ml-4">
 									Delete Workout
 								</Button>
 							</DialogTrigger>
-							<DialogContent className="sm:max-w-sm" key={workout.id}>
+
+							<DialogContent className="sm:max-w-sm">
 								<DialogHeader>
 									<DialogTitle>Are you sure you want to delete this workout?</DialogTitle>
 								</DialogHeader>
+
 								<FieldGroup>
-									<Button onClick={(e) => handleDeleteWorkout(e, workout.id)}>Yes</Button>
+									<Button onClick={() => handleDeleteWorkout(workout.id)}>Yes</Button>
+
 									<DialogClose asChild>
 										<Button variant="outline">No</Button>
 									</DialogClose>
@@ -130,30 +133,28 @@ export default function Page() {
 		})
 	}
 
-	if (loadingWorkouts) {
+	if (!user || loadingWorkouts) {
 		return <main className="pt-20">Loading...</main>
 	}
 
-	if (!user) return null
-
 	return (
-		<div className="p-12">
+		<div>
 			<h1 className="mt-8 ml-8 text-xl">Workouts</h1>
-			{!pastWorkouts.length ? (
+
+			<div className="m-10">
+				<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" activeGoalId={activeGoalId} />
+			</div>
+
+			{pastWorkouts.length === 0 ? (
 				<Card className="w-full max-w-sm mt-4">
 					<CardHeader>
-						<CardTitle>You haven't logged any workouts yet.</CardTitle>
+						<CardTitle>You haven&apos;t logged any workouts yet.</CardTitle>
 					</CardHeader>
 				</Card>
 			) : (
 				<div>
-					<div className="m-10">
-						<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" activeGoalId={activeGoalId} />
-					</div>
-					<div>
-						<h2 className="text-xl m-6">Logged Workouts</h2>
-						{renderWorkouts()}
-					</div>
+					<h2 className="text-xl m-6">Logged Workouts</h2>
+					{renderWorkouts()}
 				</div>
 			)}
 		</div>

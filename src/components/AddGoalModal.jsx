@@ -5,7 +5,7 @@ import { format } from 'date-fns'
 import { ChevronDownIcon } from 'lucide-react'
 import { Timestamp } from 'firebase/firestore'
 
-import { useAuth } from '@/lib/firebase/useAuth'
+import { useUser } from '@/lib/UserContext'
 import { createGoal, editGoal } from '@/lib/goals'
 
 import { Button } from '@/components/ui/button'
@@ -38,7 +38,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 export function AddGoalModal({ onSuccess, mode = 'create', goal = null }) {
-  const user = useAuth()
+  const user = useUser()
 
   const isEdit = mode === 'edit'
 
@@ -73,8 +73,6 @@ export function AddGoalModal({ onSuccess, mode = 'create', goal = null }) {
     if (!goalType || !experienceLevel || !daysPerWeek) {
       return
     }
-
-    if (!user) return
 
     const goalData = {
       type: goalType,

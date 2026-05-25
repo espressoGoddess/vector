@@ -5,7 +5,7 @@ import { format } from 'date-fns'
 import { ChevronDownIcon } from 'lucide-react'
 import { Timestamp } from 'firebase/firestore'
 
-import { useAuth } from '@/lib/firebase/useAuth'
+import { useUser } from '@/lib/UserContext'
 import { createWorkout, editWorkout } from '@/lib/workouts'
 
 import { Button } from '@/components/ui/button'
@@ -42,14 +42,14 @@ export function LogWorkoutModal({
 	workout = null,
 	activeGoalId = null,
 }) {
-	const user = useAuth()
+	const user = useUser()
 
 	const isEdit = mode === 'edit'
 
 	const [open, setOpen] = useState(false)
 
 	const [workoutType, setWorkoutType] = useState('')
-	const [completedAt, setCompletedAt] = useState('')
+	const [completedAt, setCompletedAt] = useState(null)
 	const [durationMinutes, setDurationMinutes] = useState('')
 	const [distanceMiles, setDistanceMiles] = useState('')
 	const [intensity, setIntensity] = useState('')
@@ -64,7 +64,7 @@ export function LogWorkoutModal({
 		if (!workout || !open) return
 
 		setWorkoutType(workout.type || '')
-		setCompletedAt(workout.completed_at?.toDate ? workout.completed_at.toDate() : new Date())
+		setCompletedAt(workout.completed_at?.toDate ? workout.completed_at.toDate() : null)
 		setDurationMinutes(workout.duration_minutes ? String(workout.duration_minutes) : '')
 		setDistanceMiles(workout.distance_miles ? String(workout.distance_miles) : '')
 		setIntensity(workout.intensity ? String(workout.intensity) : '')
@@ -95,8 +95,6 @@ export function LogWorkoutModal({
 		) {
 			return
 		}
-
-		if (!user) return
 
 		const workoutData = {
 			goal_id: activeGoalId || workout?.goal_id || null,
@@ -135,7 +133,7 @@ export function LogWorkoutModal({
 
 	function resetForm() {
 		setWorkoutType('')
-		setCompletedAt('')
+		setCompletedAt(null)
 		setDurationMinutes('')
 		setDistanceMiles('')
 		setIntensity('')
@@ -330,7 +328,14 @@ export function LogWorkoutModal({
 					</FieldGroup>
 
 					<DialogFooter>
-						<Button type="button" variant="outline" onClick={() => setOpen(false)}>
+						<Button
+							type="button"
+							variant="outline"
+							onClick={() => {
+								setOpen(false)
+								resetForm()
+							}}
+						>
 							Cancel
 						</Button>
 

@@ -1,9 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 
-import { useAuth } from '@/lib/firebase/useAuth'
+import { useUser } from '@/lib/UserContext'
 import { endGoal, getGoals } from '@/lib/goals'
 import { formatDate } from '@/lib/utils'
 import { AddGoalModal } from '@/components/AddGoalModal'
@@ -14,7 +13,6 @@ import {
 	Dialog,
 	DialogClose,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -23,16 +21,13 @@ import {
 import { Field, FieldGroup } from '@/components/ui/field'
 
 export default function GoalsPage() {
-	const user = useAuth()
-	const router = useRouter()
+	const user = useUser()
 
 	const [activeGoal, setActiveGoal] = useState(null)
 	const [loadingGoal, setLoadingGoal] = useState(true)
 	const [oldGoals, setOldGoals] = useState([])
 
 	async function fetchGoals() {
-		if (!user) return
-
 		try {
 			setLoadingGoal(true)
 
@@ -48,15 +43,10 @@ export default function GoalsPage() {
 	}
 
 	useEffect(() => {
-		if (user === undefined) return
-
-		if (!user) {
-			router.push('/login')
-			return
-		}
+		if (!user) return
 
 		fetchGoals()
-	}, [user, router])
+	}, [user])
 
 	async function handleEndGoal(e, status) {
 		e.preventDefault()
@@ -77,7 +67,7 @@ export default function GoalsPage() {
 	const goals = () => {
 		return oldGoals.map((goal) => {
 			return (
-				<Card className="w-full max-w-sm mt-4" key={goal.id}>
+				<Card className="w-[calc(100%-2rem)] max-w-sm mx-auto" key={goal.id}>
 					<CardHeader>
 						<CardTitle>Goal: {goal.type}</CardTitle>
 					</CardHeader>
@@ -101,11 +91,11 @@ export default function GoalsPage() {
 	}
 
 	return (
-		<main className="p-12">
+		<div>
 			<h1 className="mt-8 ml-8 text-xl">Goals</h1>
 
 			{!activeGoal ? (
-				<Card className="w-full max-w-sm mt-4">
+				<Card className="w-[calc(100%-2rem)] max-w-sm mx-auto mt-6">
 					<CardHeader>
 						<CardTitle>You don’t have an active goal yet.</CardTitle>
 					</CardHeader>
@@ -114,7 +104,7 @@ export default function GoalsPage() {
 					</CardContent>
 				</Card>
 			) : (
-				<Card className="w-full max-w-sm mt-4">
+				<Card className="w-[calc(100%-2rem)] max-w-sm mx-auto mt-6">
 					<CardHeader>
 						<CardTitle>Goal: {activeGoal.type}</CardTitle>
 					</CardHeader>
@@ -178,12 +168,12 @@ export default function GoalsPage() {
 					</CardFooter>
 				</Card>
 			)}
-			{oldGoals.length && (
+			{oldGoals.length > 0 && (
 				<div>
 					<h2 className="text-xl m-6">Past Goals</h2>
 					{goals()}
 				</div>
 			)}
-		</main>
+		</div>
 	)
 }
