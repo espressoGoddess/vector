@@ -12,6 +12,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
+	DialogDescription,
 	DialogClose,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
@@ -115,6 +116,7 @@ export default function Page() {
 							<DialogContent className="sm:max-w-sm">
 								<DialogHeader>
 									<DialogTitle>Are you sure you want to delete this workout?</DialogTitle>
+									<DialogDescription>This action cannot be undone.</DialogDescription>
 								</DialogHeader>
 
 								<FieldGroup>
@@ -133,7 +135,7 @@ export default function Page() {
 	}
 
 	if (!user || loadingWorkouts) {
-		return <main className="pt-20">Loading...</main>
+		return <main className="pt-20 ml-14">Loading...</main>
 	}
 
 	return (

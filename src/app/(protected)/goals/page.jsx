@@ -17,6 +17,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
+	DialogDescription,
 } from '@/components/ui/dialog'
 import { Field, FieldGroup } from '@/components/ui/field'
 
@@ -57,7 +58,7 @@ export default function GoalsPage() {
 	}
 
 	if (user === undefined || loadingGoal) {
-		return <main className="pt-20">Loading...</main>
+		return <main className="pt-20 ml-12">Loading...</main>
 	}
 
 	if (!user) {
@@ -139,6 +140,10 @@ export default function GoalsPage() {
 							<DialogContent className="sm:max-w-sm">
 								<DialogHeader>
 									<DialogTitle>Did you complete this goal?</DialogTitle>
+									<DialogDescription>
+										Select "Yes" if you reached your goal, or "No" to end it without marking it
+										complete.
+									</DialogDescription>
 								</DialogHeader>
 								<FieldGroup>
 									<Button
