@@ -168,7 +168,7 @@ export default function GoalsPage() {
 					</CardFooter>
 				</Card>
 			)}
-			{oldGoals.length > 0 && (
+			{oldGoals && oldGoals.length > 0 && (
 				<div>
 					<h2 className="text-xl m-6">Past Goals</h2>
 					{goals()}
