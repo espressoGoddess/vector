@@ -138,7 +138,7 @@ export default function Page() {
 	}
 
 	return (
-		<div>
+		<div className="pl-8">
 			<h1 className="mt-8 ml-8 text-xl">Workouts</h1>
 
 			<div className="m-10">

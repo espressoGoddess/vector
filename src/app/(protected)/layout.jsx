@@ -22,7 +22,7 @@ function ProtectedContent({ children }) {
 	if (!user) return null
 
 	return (
-		<div className="pl-8">
+		<div>
 			<NavMenu />
 			{children}
 		</div>
