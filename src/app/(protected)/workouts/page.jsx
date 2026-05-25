@@ -137,24 +137,29 @@ export default function Page() {
 	}
 
 	return (
-		<div className="pl-8">
+		<div className="pl-4">
 			<h1 className="mt-8 ml-8 text-xl">Workouts</h1>
-			<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" activeGoalId={activeGoalId} />
 
-			{pastWorkouts.length === 0 && (
-				<Card className="w-full max-w-sm mt-4">
+			{pastWorkouts.length === 0 ? (
+				<Card className="w-[calc(100%-2rem)] max-w-sm mt-6">
 					<CardHeader>
 						<CardTitle>You haven&apos;t logged any workouts yet.</CardTitle>
 					</CardHeader>
-				</Card>
-			)}
 
-			{pastWorkouts.length > 0 ? (
+					<CardContent>
+						<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" activeGoalId={activeGoalId} />
+					</CardContent>
+				</Card>
+			) : (
 				<div>
+					<div className="m-6">
+						<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" activeGoalId={activeGoalId} />
+					</div>
+
 					<h2 className="text-xl m-6">Logged Workouts</h2>
 					{renderWorkouts()}
 				</div>
-			) : null}
+			)}
 		</div>
 	)
 }
