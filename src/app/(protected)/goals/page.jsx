@@ -67,7 +67,7 @@ export default function GoalsPage() {
 	const goals = () => {
 		return oldGoals.map((goal) => {
 			return (
-				<Card className="w-[calc(100%-2rem)] max-w-sm mx-auto mt-4" key={goal.id}>
+				<Card className="w-[calc(100%-2rem)] max-w-sm mt-4" key={goal.id}>
 					<CardHeader>
 						<CardTitle>Goal: {goal.type}</CardTitle>
 					</CardHeader>
@@ -95,7 +95,7 @@ export default function GoalsPage() {
 			<h1 className="mt-8 ml-8 text-xl">Goals</h1>
 
 			{!activeGoal ? (
-				<Card className="w-[calc(100%-2rem)] max-w-sm mx-auto mt-6">
+				<Card className="w-[calc(100%-2rem)] max-w-sm mt-6">
 					<CardHeader>
 						<CardTitle>You don’t have an active goal yet.</CardTitle>
 					</CardHeader>
@@ -104,7 +104,7 @@ export default function GoalsPage() {
 					</CardContent>
 				</Card>
 			) : (
-				<Card className="w-[calc(100%-2rem)] max-w-sm mx-auto mt-6">
+				<Card className="w-[calc(100%-2rem)] max-w-sm mt-6">
 					<CardHeader>
 						<CardTitle>Goal: {activeGoal.type}</CardTitle>
 					</CardHeader>
