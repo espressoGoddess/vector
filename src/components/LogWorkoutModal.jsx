@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, startTransition } from 'react'
 import { format } from 'date-fns'
 import { ChevronDownIcon } from 'lucide-react'
 import { Timestamp } from 'firebase/firestore'
@@ -63,13 +63,15 @@ export function LogWorkoutModal({
 	useEffect(() => {
 		if (!workout || !open) return
 
-		setWorkoutType(workout.type || '')
-		setCompletedAt(workout.completed_at?.toDate ? workout.completed_at.toDate() : null)
-		setDurationMinutes(workout.duration_minutes ? String(workout.duration_minutes) : '')
-		setDistanceMiles(workout.distance_miles ? String(workout.distance_miles) : '')
-		setIntensity(workout.intensity ? String(workout.intensity) : '')
-		setFeelLabel(workout.feel_label || '')
-		setNotes(workout.notes || '')
+		startTransition(() => {
+			setWorkoutType(workout.type || '')
+			setCompletedAt(workout.completed_at?.toDate ? workout.completed_at.toDate() : null)
+			setDurationMinutes(workout.duration_minutes ? String(workout.duration_minutes) : '')
+			setDistanceMiles(workout.distance_miles ? String(workout.distance_miles) : '')
+			setIntensity(workout.intensity ? String(workout.intensity) : '')
+			setFeelLabel(workout.feel_label || '')
+			setNotes(workout.notes || '')
+		})
 	}, [workout, open])
 
 	async function handleSubmit(e) {

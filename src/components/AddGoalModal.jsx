@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, startTransition } from 'react'
 import { format } from 'date-fns'
 import { ChevronDownIcon } from 'lucide-react'
 import { Timestamp } from 'firebase/firestore'
@@ -57,12 +57,13 @@ export function AddGoalModal({ onSuccess, mode = 'create', goal = null }) {
   useEffect(() => {
     if (!goal || !open) return
 
-    setGoalType(goal.type || '')
-    setExperienceLevel(goal.experience_level || '')
-    setDaysPerWeek(goal.days_per_week ? String(goal.days_per_week) : '')
-    setNotes(goal.notes || '')
-
-    setTargetDate(goal.target_date?.toDate ? goal.target_date.toDate() : undefined)
+    startTransition(() => {
+      setGoalType(goal.type || '')
+      setExperienceLevel(goal.experience_level || '')
+      setDaysPerWeek(goal.days_per_week ? String(goal.days_per_week) : '')
+      setNotes(goal.notes || '')
+      setTargetDate(goal.target_date?.toDate ? goal.target_date.toDate() : undefined)
+    })
   }, [goal, open])
 
   async function handleSubmit(e) {

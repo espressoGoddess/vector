@@ -29,11 +29,6 @@ export default function Page() {
 	const [pastWorkouts, setPastWorkouts] = useState([])
 	const [activeGoalId, setActiveGoalId] = useState(null)
 
-	async function fetchActiveGoalId() {
-		const goal = await getGoals(user.uid, 'active')
-		setActiveGoalId(goal?.id || null)
-	}
-
 	async function fetchWorkouts() {
 		const workouts = await getWorkouts(user.uid)
 		setPastWorkouts(workouts)
@@ -43,13 +38,17 @@ export default function Page() {
 		if (!user) return
 
 		async function loadData() {
-			await fetchActiveGoalId()
-			await fetchWorkouts()
+			const goal = await getGoals(user.uid, 'active')
+			setActiveGoalId(goal?.id || null)
+
+			const workouts = await getWorkouts(user.uid)
+			setPastWorkouts(workouts)
+
 			setLoadingWorkouts(false)
 		}
 
 		loadData()
-	}, [user?.uid])
+	}, [user])
 
 	async function handleDeleteWorkout(workoutId) {
 		await deleteWorkout(user.uid, workoutId)
@@ -140,25 +139,22 @@ export default function Page() {
 	return (
 		<div className="pl-8">
 			<h1 className="mt-8 ml-8 text-xl">Workouts</h1>
+			<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" activeGoalId={activeGoalId} />
+
 			{pastWorkouts.length === 0 && (
 				<Card className="w-full max-w-sm mt-4">
 					<CardHeader>
 						<CardTitle>You haven&apos;t logged any workouts yet.</CardTitle>
 					</CardHeader>
-					<CardContent>
-						<LogWorkoutModal onSuccess={fetchWorkouts} mode="create" activeGoalId={activeGoalId} />
-					</CardContent>
 				</Card>
 			)}
 
-			{pastWorkouts.length ? (
+			{pastWorkouts.length > 0 ? (
 				<div>
 					<h2 className="text-xl m-6">Logged Workouts</h2>
 					{renderWorkouts()}
 				</div>
-			) : (
-				<></>
-			)}
+			) : null}
 		</div>
 	)
 }

@@ -10,20 +10,29 @@ export default function NavMenu() {
   return (
     <nav className="sticky top-0 z-50 bg-background">
       <div className="border-b p-4 flex gap-4 justify-around ">
-        <Link href="/" className={pathname === '/' ? 'font-semibold border-b-2' : ''}>
+        <Link
+          href="/"
+          className={`px-4 pt-4 ${pathname === '/' ? 'font-semibold border-b-2' : ''}`}
+        >
           Home
         </Link>
 
         <Link
           href="/workouts"
-          className={pathname === '/workouts' ? 'font-semibold border-b-2' : ''}
+          className={`px-4 pt-4 ${pathname === '/workouts' ? 'font-semibold border-b-2' : ''}`}
         >
           Workouts
         </Link>
-        <Link href="/goals" className={pathname === '/goals' ? 'font-semibold border-b-2' : ''}>
+        <Link
+          href="/goals"
+          className={`px-4 pt-4 ${pathname === '/goals' ? 'font-semibold border-b-2' : ''}`}
+        >
           Goals
         </Link>
-        <Link href="/coach" className={pathname === '/coach' ? 'font-semibold border-b-2' : ''}>
+        <Link
+          href="/coach"
+          className={`px-4 pt-4 ${pathname === '/coach' ? 'font-semibold border-b-2' : ''}`}
+        >
           Coach
         </Link>
 

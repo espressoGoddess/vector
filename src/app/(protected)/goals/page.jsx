@@ -33,15 +33,15 @@ export default function GoalsPage() {
 
 			const currentGoal = await getGoals(user.uid, 'active')
 			setActiveGoal(currentGoal)
+
 			const completedGoals = await getGoals(user.uid, 'completed')
 			setOldGoals(completedGoals)
 		} catch (err) {
-			console.error('Error fetching active goal:', err)
+			console.error('Error fetching goals:', err)
 		} finally {
 			setLoadingGoal(false)
 		}
 	}
-
 	useEffect(() => {
 		if (!user) return
 
