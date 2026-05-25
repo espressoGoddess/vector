@@ -1,15 +1,15 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { sign_in_with_google } from '@/lib/firebase/auth'
+import { signInWithGoogle } from '@/lib/firebase/auth'
 import { Button } from '@/components/ui/button'
 
 export default function LoginPage() {
   const router = useRouter()
 
-  async function handle_login() {
+  async function handleLogin() {
     try {
-      await sign_in_with_google()
+      await signInWithGoogle()
       router.push('/goals')
     } catch (err) {
       console.error('Login error:', err)
@@ -19,7 +19,7 @@ export default function LoginPage() {
   return (
     <main>
       <h1>Login</h1>
-      <Button className="primary" onClick={handle_login}>
+      <Button className="primary" onClick={handleLogin}>
         Sign in with Google
       </Button>
     </main>
