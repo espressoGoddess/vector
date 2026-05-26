@@ -149,7 +149,7 @@ export function LogWorkoutModal({
 				<Button variant="outline">{isEdit ? 'Edit Workout' : 'Log Workout'}</Button>
 			</DialogTrigger>
 
-			<DialogContent className="sm:max-w-lg">
+			<DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] overflow-y-auto sm:max-w-lg">
 				<form onSubmit={handleSubmit} noValidate className="space-y-6">
 					<DialogHeader>
 						<DialogTitle>{isEdit ? 'Edit Workout' : 'Log Workout'}</DialogTitle>
