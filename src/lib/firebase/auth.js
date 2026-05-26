@@ -2,7 +2,7 @@ import { signInWithPopup, signOut } from 'firebase/auth'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { auth, db, google_provider } from '@/lib/firebase/firebase'
 
-export async function sign_in_with_google() {
+export async function signInWithGoogle() {
   const result = await signInWithPopup(auth, google_provider)
   const user = result.user
 
@@ -21,6 +21,6 @@ export async function sign_in_with_google() {
   return user
 }
 
-export function sign_out_user() {
+export function signOutUser() {
   return signOut(auth)
 }

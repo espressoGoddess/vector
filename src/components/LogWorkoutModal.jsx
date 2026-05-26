@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, startTransition } from 'react'
 import { format } from 'date-fns'
 import { ChevronDownIcon } from 'lucide-react'
 import { Timestamp } from 'firebase/firestore'
 
-import { useAuth } from '@/lib/firebase/useAuth'
+import { useUser } from '@/lib/UserContext'
 import { createWorkout, editWorkout } from '@/lib/workouts'
 
 import { Button } from '@/components/ui/button'
@@ -42,14 +42,14 @@ export function LogWorkoutModal({
 	workout = null,
 	activeGoalId = null,
 }) {
-	const user = useAuth()
+	const user = useUser()
 
 	const isEdit = mode === 'edit'
 
 	const [open, setOpen] = useState(false)
 
 	const [workoutType, setWorkoutType] = useState('')
-	const [completedAt, setCompletedAt] = useState('')
+	const [completedAt, setCompletedAt] = useState(null)
 	const [durationMinutes, setDurationMinutes] = useState('')
 	const [distanceMiles, setDistanceMiles] = useState('')
 	const [intensity, setIntensity] = useState('')
@@ -63,13 +63,15 @@ export function LogWorkoutModal({
 	useEffect(() => {
 		if (!workout || !open) return
 
-		setWorkoutType(workout.type || '')
-		setCompletedAt(workout.completed_at?.toDate ? workout.completed_at.toDate() : new Date())
-		setDurationMinutes(workout.duration_minutes ? String(workout.duration_minutes) : '')
-		setDistanceMiles(workout.distance_miles ? String(workout.distance_miles) : '')
-		setIntensity(workout.intensity ? String(workout.intensity) : '')
-		setFeelLabel(workout.feel_label || '')
-		setNotes(workout.notes || '')
+		startTransition(() => {
+			setWorkoutType(workout.type || '')
+			setCompletedAt(workout.completed_at?.toDate ? workout.completed_at.toDate() : null)
+			setDurationMinutes(workout.duration_minutes ? String(workout.duration_minutes) : '')
+			setDistanceMiles(workout.distance_miles ? String(workout.distance_miles) : '')
+			setIntensity(workout.intensity ? String(workout.intensity) : '')
+			setFeelLabel(workout.feel_label || '')
+			setNotes(workout.notes || '')
+		})
 	}, [workout, open])
 
 	async function handleSubmit(e) {
@@ -95,8 +97,6 @@ export function LogWorkoutModal({
 		) {
 			return
 		}
-
-		if (!user) return
 
 		const workoutData = {
 			goal_id: activeGoalId || workout?.goal_id || null,
@@ -135,7 +135,7 @@ export function LogWorkoutModal({
 
 	function resetForm() {
 		setWorkoutType('')
-		setCompletedAt('')
+		setCompletedAt(null)
 		setDurationMinutes('')
 		setDistanceMiles('')
 		setIntensity('')
@@ -149,7 +149,7 @@ export function LogWorkoutModal({
 				<Button variant="outline">{isEdit ? 'Edit Workout' : 'Log Workout'}</Button>
 			</DialogTrigger>
 
-			<DialogContent className="sm:max-w-lg">
+			<DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] overflow-y-auto sm:max-w-lg">
 				<form onSubmit={handleSubmit} noValidate className="space-y-6">
 					<DialogHeader>
 						<DialogTitle>{isEdit ? 'Edit Workout' : 'Log Workout'}</DialogTitle>
@@ -226,96 +226,100 @@ export function LogWorkoutModal({
 							)}
 						</Field>
 
-						<Field>
-							<FieldLabel>
-								Duration minutes <span className="text-destructive">*</span>
-							</FieldLabel>
+						<div className="flex gap-4">
+							<Field className="flex-1">
+								<FieldLabel>
+									Duration (minutes) <span className="text-destructive">*</span>
+								</FieldLabel>
 
-							<Input
-								type="number"
-								min="1"
-								value={durationMinutes}
-								onChange={(e) => setDurationMinutes(e.target.value)}
-								placeholder="30"
-							/>
+								<Input
+									type="number"
+									min="1"
+									value={durationMinutes}
+									onChange={(e) => setDurationMinutes(e.target.value)}
+									placeholder="30"
+								/>
 
-							{hasSubmitted &&
-								(!durationMinutes ||
-									Number(durationMinutes) < 1 ||
-									Number.isNaN(Number(durationMinutes))) && (
-									<p className="text-sm text-destructive">Duration must be at least 1 minute.</p>
+								{hasSubmitted &&
+									(!durationMinutes ||
+										Number(durationMinutes) < 1 ||
+										Number.isNaN(Number(durationMinutes))) && (
+										<p className="text-sm text-destructive">Duration must be at least 1 minute.</p>
+									)}
+							</Field>
+
+							<Field className="flex-1">
+								<FieldLabel>Distance (miles)</FieldLabel>
+
+								<Input
+									type="number"
+									min="0"
+									step="0.01"
+									value={distanceMiles}
+									onChange={(e) => setDistanceMiles(e.target.value)}
+									placeholder="3.25"
+								/>
+
+								{hasSubmitted &&
+									distanceMiles &&
+									(Number(distanceMiles) < 0 || Number.isNaN(Number(distanceMiles))) && (
+										<p className="text-sm text-destructive">Distance must be 0 or greater.</p>
+									)}
+							</Field>
+						</div>
+
+						<div className="flex gap-4">
+							<Field className="flex-1">
+								<FieldLabel>
+									Intensity <span className="text-destructive">*</span>
+								</FieldLabel>
+
+								<Input
+									type="number"
+									min="1"
+									max="10"
+									value={intensity}
+									onChange={(e) => setIntensity(e.target.value)}
+									placeholder="1–10"
+								/>
+
+								<FieldDescription>1–10 effort</FieldDescription>
+
+								{hasSubmitted &&
+									(!intensity ||
+										Number(intensity) < 1 ||
+										Number(intensity) > 10 ||
+										Number.isNaN(Number(intensity))) && (
+										<p className="text-sm text-destructive">Intensity must be between 1 and 10.</p>
+									)}
+							</Field>
+
+							<Field className="flex-1">
+								<FieldLabel>
+									How did it feel? <span className="text-destructive">*</span>
+								</FieldLabel>
+
+								<Select value={feelLabel} onValueChange={setFeelLabel}>
+									<SelectTrigger>
+										<SelectValue placeholder="Select feeling" />
+									</SelectTrigger>
+
+									<SelectContent>
+										<SelectItem value="great">Great</SelectItem>
+										<SelectItem value="good">Good</SelectItem>
+										<SelectItem value="okay">Okay</SelectItem>
+										<SelectItem value="tired">Tired</SelectItem>
+										<SelectItem value="bad">Bad</SelectItem>
+									</SelectContent>
+								</Select>
+
+								<FieldDescription>Required</FieldDescription>
+
+								{hasSubmitted && !feelLabel && (
+									<p className="text-sm text-destructive">Feeling is required.</p>
 								)}
-						</Field>
-
-						<Field>
-							<FieldLabel>Distance miles</FieldLabel>
-
-							<Input
-								type="number"
-								min="0"
-								step="0.01"
-								value={distanceMiles}
-								onChange={(e) => setDistanceMiles(e.target.value)}
-								placeholder="3.25"
-							/>
-
-							<FieldDescription>Optional. Useful for run, bike, or swim workouts.</FieldDescription>
-
-							{hasSubmitted &&
-								distanceMiles &&
-								(Number(distanceMiles) < 0 || Number.isNaN(Number(distanceMiles))) && (
-									<p className="text-sm text-destructive">Distance must be 0 or greater.</p>
-								)}
-						</Field>
-
-						<Field>
-							<FieldLabel>
-								Intensity <span className="text-destructive">*</span>
-							</FieldLabel>
-
-							<Input
-								type="number"
-								min="1"
-								max="10"
-								value={intensity}
-								onChange={(e) => setIntensity(e.target.value)}
-								placeholder="1–10"
-							/>
-
-							<FieldDescription>Required effort rating from 1 to 10.</FieldDescription>
-
-							{hasSubmitted &&
-								(!intensity ||
-									Number(intensity) < 1 ||
-									Number(intensity) > 10 ||
-									Number.isNaN(Number(intensity))) && (
-									<p className="text-sm text-destructive">Intensity must be between 1 and 10.</p>
-								)}
-						</Field>
-
-						<Field>
-							<FieldLabel>
-								How did it feel? <span className="text-destructive">*</span>
-							</FieldLabel>
-
-							<Select value={feelLabel} onValueChange={setFeelLabel}>
-								<SelectTrigger>
-									<SelectValue placeholder="Select feeling" />
-								</SelectTrigger>
-
-								<SelectContent>
-									<SelectItem value="great">Great</SelectItem>
-									<SelectItem value="good">Good</SelectItem>
-									<SelectItem value="okay">Okay</SelectItem>
-									<SelectItem value="tired">Tired</SelectItem>
-									<SelectItem value="bad">Bad</SelectItem>
-								</SelectContent>
-							</Select>
-
-							{hasSubmitted && !feelLabel && (
-								<p className="text-sm text-destructive">Feeling is required.</p>
-							)}
-						</Field>
+							</Field>
+						</div>
 
 						<Field>
 							<FieldLabel htmlFor="notes">Notes</FieldLabel>
@@ -330,7 +334,14 @@ export function LogWorkoutModal({
 					</FieldGroup>
 
 					<DialogFooter>
-						<Button type="button" variant="outline" onClick={() => setOpen(false)}>
+						<Button
+							type="button"
+							variant="outline"
+							onClick={() => {
+								setOpen(false)
+								resetForm()
+							}}
+						>
 							Cancel
 						</Button>
 
