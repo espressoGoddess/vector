@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Vector
 
-## Getting Started
+A fitness training app designed to help users set goals, track workouts, and build sustainable training habits.
 
-First, run the development server:
+Vector is being built toward an AI-guided coaching experience that adapts around real-world training rather than rigid plans.
+
+<!-- ---
+
+## Live Demo
+
+ Add deployed link 
+[Live App](#)
+
+---
+
+## Screenshots
+
+## Dashboard
+![Dashboard](./screenshots/dashboard.png)
+
+## Goals
+![Goals](./screenshots/goals.png)
+
+## Workouts
+![Workouts](./screenshots/workouts.png)
+
+## Mobile Navigation
+![Mobile Navigation](./screenshots/mobile-nav.png)
+-->
+
+---
+
+## Features
+
+### Current MVP Features
+
+- Authentication with Firebase
+- Protected routes
+- Create goals
+- Edit goals
+- End goals (completed/inactive)
+- Log workouts
+- Edit workouts
+- Delete workouts
+- Responsive navigation
+- Mobile hamburger menu
+- Shared user context
+
+---
+
+## Planned Features
+
+- AI coach/chat experience
+- Dynamic training recommendations
+- Dashboard
+- Upcoming workout plans
+- Training state awareness
+- Progress analytics
+- Weekly planning adjustments
+
+---
+
+## Tech Stack
+
+### Frontend
+
+- Next.js
+- React
+- Tailwind CSS
+- shadcn/ui
+
+### Backend / Data
+
+- Firebase Authentication
+- Firestore
+
+### Other Tools
+
+- date-fns
+- Lucide Icons
+
+---
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/espressoGoddess/vector.git
+```
+
+Move into the project:
+
+```bash
+cd vector
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file:
 
-## Learn More
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Future Improvements
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Workout analytics
+- Training trends and progress tracking
+- Improved mobile UX
+- AI-generated training suggestions
+- Calendar/planning views
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Author
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Amber Shipley
+
+GitHub: https://github.com/espressoGoddess
