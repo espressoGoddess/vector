@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, startTransition } from 'react'
 
 import { useUser } from '@/lib/UserContext'
 import { endGoal, getGoals } from '@/lib/goals'
@@ -28,7 +28,7 @@ export default function GoalsPage() {
 	const [loadingGoal, setLoadingGoal] = useState(true)
 	const [oldGoals, setOldGoals] = useState([])
 
-	async function fetchGoals() {
+	const fetchGoals = useCallback(async () => {
 		try {
 			setLoadingGoal(true)
 
@@ -38,16 +38,19 @@ export default function GoalsPage() {
 			const completedGoals = await getGoals(user.uid, 'completed')
 			setOldGoals(completedGoals)
 		} catch (err) {
-			console.error('Error fetching goals:', err)
+			console.error('Error fetching active goal:', err)
 		} finally {
 			setLoadingGoal(false)
 		}
-	}
+	}, [user])
+
 	useEffect(() => {
 		if (!user) return
 
-		fetchGoals()
-	}, [user])
+		startTransition(() => {
+			fetchGoals()
+		})
+	}, [user, fetchGoals])
 
 	async function handleEndGoal(e, status) {
 		e.preventDefault()
@@ -141,7 +144,7 @@ export default function GoalsPage() {
 								<DialogHeader>
 									<DialogTitle>Did you complete this goal?</DialogTitle>
 									<DialogDescription>
-										Select "Yes" if you reached your goal, or "No" to end it without marking it
+										Select Yes if you reached your goal, or No to end it without marking it
 										complete.
 									</DialogDescription>
 								</DialogHeader>

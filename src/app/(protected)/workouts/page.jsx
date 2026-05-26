@@ -1,6 +1,5 @@
 'use client'
 //@TODO check the goal start date, only attach workout with same or more recent date to it
-//@TODO edit goal capability
 
 import { useEffect, useState } from 'react'
 import { useUser } from '@/lib/UserContext'
