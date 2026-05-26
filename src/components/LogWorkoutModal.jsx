@@ -226,96 +226,100 @@ export function LogWorkoutModal({
 							)}
 						</Field>
 
-						<Field>
-							<FieldLabel>
-								Duration minutes <span className="text-destructive">*</span>
-							</FieldLabel>
+						<div className="flex gap-4">
+							<Field className="flex-1">
+								<FieldLabel>
+									Duration (minutes) <span className="text-destructive">*</span>
+								</FieldLabel>
 
-							<Input
-								type="number"
-								min="1"
-								value={durationMinutes}
-								onChange={(e) => setDurationMinutes(e.target.value)}
-								placeholder="30"
-							/>
+								<Input
+									type="number"
+									min="1"
+									value={durationMinutes}
+									onChange={(e) => setDurationMinutes(e.target.value)}
+									placeholder="30"
+								/>
 
-							{hasSubmitted &&
-								(!durationMinutes ||
-									Number(durationMinutes) < 1 ||
-									Number.isNaN(Number(durationMinutes))) && (
-									<p className="text-sm text-destructive">Duration must be at least 1 minute.</p>
+								{hasSubmitted &&
+									(!durationMinutes ||
+										Number(durationMinutes) < 1 ||
+										Number.isNaN(Number(durationMinutes))) && (
+										<p className="text-sm text-destructive">Duration must be at least 1 minute.</p>
+									)}
+							</Field>
+
+							<Field className="flex-1">
+								<FieldLabel>Distance (miles)</FieldLabel>
+
+								<Input
+									type="number"
+									min="0"
+									step="0.01"
+									value={distanceMiles}
+									onChange={(e) => setDistanceMiles(e.target.value)}
+									placeholder="3.25"
+								/>
+
+								{hasSubmitted &&
+									distanceMiles &&
+									(Number(distanceMiles) < 0 || Number.isNaN(Number(distanceMiles))) && (
+										<p className="text-sm text-destructive">Distance must be 0 or greater.</p>
+									)}
+							</Field>
+						</div>
+
+						<div className="flex gap-4">
+							<Field className="flex-1">
+								<FieldLabel>
+									Intensity <span className="text-destructive">*</span>
+								</FieldLabel>
+
+								<Input
+									type="number"
+									min="1"
+									max="10"
+									value={intensity}
+									onChange={(e) => setIntensity(e.target.value)}
+									placeholder="1–10"
+								/>
+
+								<FieldDescription>1–10 effort</FieldDescription>
+
+								{hasSubmitted &&
+									(!intensity ||
+										Number(intensity) < 1 ||
+										Number(intensity) > 10 ||
+										Number.isNaN(Number(intensity))) && (
+										<p className="text-sm text-destructive">Intensity must be between 1 and 10.</p>
+									)}
+							</Field>
+
+							<Field className="flex-1">
+								<FieldLabel>
+									How did it feel? <span className="text-destructive">*</span>
+								</FieldLabel>
+
+								<Select value={feelLabel} onValueChange={setFeelLabel}>
+									<SelectTrigger>
+										<SelectValue placeholder="Select feeling" />
+									</SelectTrigger>
+
+									<SelectContent>
+										<SelectItem value="great">Great</SelectItem>
+										<SelectItem value="good">Good</SelectItem>
+										<SelectItem value="okay">Okay</SelectItem>
+										<SelectItem value="tired">Tired</SelectItem>
+										<SelectItem value="bad">Bad</SelectItem>
+									</SelectContent>
+								</Select>
+
+								<FieldDescription>Required</FieldDescription>
+
+								{hasSubmitted && !feelLabel && (
+									<p className="text-sm text-destructive">Feeling is required.</p>
 								)}
-						</Field>
-
-						<Field>
-							<FieldLabel>Distance miles</FieldLabel>
-
-							<Input
-								type="number"
-								min="0"
-								step="0.01"
-								value={distanceMiles}
-								onChange={(e) => setDistanceMiles(e.target.value)}
-								placeholder="3.25"
-							/>
-
-							<FieldDescription>Optional. Useful for run, bike, or swim workouts.</FieldDescription>
-
-							{hasSubmitted &&
-								distanceMiles &&
-								(Number(distanceMiles) < 0 || Number.isNaN(Number(distanceMiles))) && (
-									<p className="text-sm text-destructive">Distance must be 0 or greater.</p>
-								)}
-						</Field>
-
-						<Field>
-							<FieldLabel>
-								Intensity <span className="text-destructive">*</span>
-							</FieldLabel>
-
-							<Input
-								type="number"
-								min="1"
-								max="10"
-								value={intensity}
-								onChange={(e) => setIntensity(e.target.value)}
-								placeholder="1–10"
-							/>
-
-							<FieldDescription>Required effort rating from 1 to 10.</FieldDescription>
-
-							{hasSubmitted &&
-								(!intensity ||
-									Number(intensity) < 1 ||
-									Number(intensity) > 10 ||
-									Number.isNaN(Number(intensity))) && (
-									<p className="text-sm text-destructive">Intensity must be between 1 and 10.</p>
-								)}
-						</Field>
-
-						<Field>
-							<FieldLabel>
-								How did it feel? <span className="text-destructive">*</span>
-							</FieldLabel>
-
-							<Select value={feelLabel} onValueChange={setFeelLabel}>
-								<SelectTrigger>
-									<SelectValue placeholder="Select feeling" />
-								</SelectTrigger>
-
-								<SelectContent>
-									<SelectItem value="great">Great</SelectItem>
-									<SelectItem value="good">Good</SelectItem>
-									<SelectItem value="okay">Okay</SelectItem>
-									<SelectItem value="tired">Tired</SelectItem>
-									<SelectItem value="bad">Bad</SelectItem>
-								</SelectContent>
-							</Select>
-
-							{hasSubmitted && !feelLabel && (
-								<p className="text-sm text-destructive">Feeling is required.</p>
-							)}
-						</Field>
+							</Field>
+						</div>
 
 						<Field>
 							<FieldLabel htmlFor="notes">Notes</FieldLabel>

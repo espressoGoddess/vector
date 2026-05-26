@@ -193,48 +193,49 @@ export function AddGoalModal({ onSuccess, mode = 'create', goal = null }) {
 							</FieldDescription>
 						</Field>
 
-						<Field>
-							<FieldLabel>
-								Experience level <span className="text-destructive">*</span>
-							</FieldLabel>
+						<div className="flex gap-4">
+							<Field className="flex-1">
+								<FieldLabel>
+									Experience level <span className="text-destructive">*</span>
+								</FieldLabel>
 
-							<Select value={experienceLevel} onValueChange={setExperienceLevel}>
-								<SelectTrigger>
-									<SelectValue placeholder="Select experience level" />
-								</SelectTrigger>
+								<Select value={experienceLevel} onValueChange={setExperienceLevel}>
+									<SelectTrigger>
+										<SelectValue placeholder="Select level" />
+									</SelectTrigger>
 
-								<SelectContent>
-									<SelectItem value="beginner">Beginner</SelectItem>
+									<SelectContent>
+										<SelectItem value="beginner">Beginner</SelectItem>
+										<SelectItem value="intermediate">Intermediate</SelectItem>
+										<SelectItem value="advanced">Advanced</SelectItem>
+									</SelectContent>
+								</Select>
 
-									<SelectItem value="intermediate">Intermediate</SelectItem>
+								{hasSubmitted && !experienceLevel && (
+									<p className="text-sm text-destructive">Experience level is required.</p>
+								)}
+							</Field>
 
-									<SelectItem value="advanced">Advanced</SelectItem>
-								</SelectContent>
-							</Select>
+							<Field className="flex-1">
+								<FieldLabel htmlFor="days_per_week">
+									Days/week <span className="text-destructive">*</span>
+								</FieldLabel>
 
-							{hasSubmitted && !experienceLevel && (
-								<p className="text-sm text-destructive">Experience level is required.</p>
-							)}
-						</Field>
+								<Input
+									id="days_per_week"
+									type="number"
+									min="1"
+									max="7"
+									value={daysPerWeek}
+									onChange={(e) => setDaysPerWeek(e.target.value)}
+									placeholder="4"
+								/>
 
-						<Field>
-							<FieldLabel htmlFor="days_per_week">
-								Training days per week <span className="text-destructive">*</span>
-							</FieldLabel>
-
-							<Input
-								id="days_per_week"
-								type="number"
-								min="1"
-								max="7"
-								value={daysPerWeek}
-								onChange={(e) => setDaysPerWeek(e.target.value)}
-							/>
-
-							{hasSubmitted && !daysPerWeek && (
-								<p className="text-sm text-destructive">Training days per week is required.</p>
-							)}
-						</Field>
+								{hasSubmitted && !daysPerWeek && (
+									<p className="text-sm text-destructive">Days/week is required.</p>
+								)}
+							</Field>
+						</div>
 
 						<Field>
 							<FieldLabel htmlFor="notes">Notes</FieldLabel>
