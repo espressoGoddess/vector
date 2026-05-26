@@ -1,87 +1,88 @@
-# Vector
+<div>
 
-A fitness training app designed to help users set goals, track workouts, and build sustainable training habits.
+# Vector 🏃‍♀️
 
-Vector is being built toward an AI-guided coaching experience that adapts around real-world training rather than rigid plans.
+Goal-driven fitness tracking designed to help users build sustainable training habits through personalized goals and workout tracking.
 
-<!-- ---
+<!--[VISIT APP HERE](#)-->
 
-## Live Demo
+*This application is actively being developed.*
 
- Add deployed link 
-[Live App](#)
+Technologies used:<br>
 
----
+<img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+<img src='https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white'/>
+<img src='https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black'/>
+<img src='https://img.shields.io/badge/Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black'/>
+<img src='https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white' />
+<img src='https://img.shields.io/badge/shadcn-ui-black?style=for-the-badge'/>
+<img src='https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white'/>
+<img src="https://img.shields.io/badge/npm-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white"/>
 
-## Screenshots
-
-## Dashboard
-![Dashboard](./screenshots/dashboard.png)
-
-## Goals
-![Goals](./screenshots/goals.png)
-
-## Workouts
-![Workouts](./screenshots/workouts.png)
-
-## Mobile Navigation
-![Mobile Navigation](./screenshots/mobile-nav.png)
--->
+</div>
 
 ---
 
-## Features
+## Abstract
 
-### Current MVP Features
+Vector is a fitness application focused on helping users train with intention rather than simply logging activity.
 
-- Authentication with Firebase
+Users can create goals, track workouts, and build a clearer picture of their training history. The long-term vision is to evolve Vector into an adaptive coaching experience capable of generating personalized recommendations based on training patterns, progress, and real-world constraints.
+
+---
+
+<!--
+
+## Preview of App
+
+<div align="center">
+
+### Login
+
+<img src="./screenshots/login.png"/>
+
+### Goals
+
+<img src="./screenshots/goals.png"/>
+
+### Workout Logging
+
+<img src="./screenshots/workouts.png"/>
+
+### Mobile Navigation
+
+<img src="./screenshots/mobile-nav.png"/>
+
+</div>
+
+--- -->
+
+## Current Features
+
+- User authentication
 - Protected routes
 - Create goals
 - Edit goals
-- End goals (completed/inactive)
+- End goals
 - Log workouts
 - Edit workouts
 - Delete workouts
-- Responsive navigation
-- Mobile hamburger menu
 - Shared user context
-
----
+- Responsive desktop/mobile navigation
+- Mobile hamburger menu
 
 ## Planned Features
 
-- AI coach/chat experience
-- Dynamic training recommendations
+- AI-guided coaching
+- Dynamic workout recommendations
 - Dashboard
-- Upcoming workout plans
-- Training state awareness
+- Training insights
+- Upcoming workout planning
 - Progress analytics
-- Weekly planning adjustments
 
 ---
 
-## Tech Stack
-
-### Frontend
-
-- Next.js
-- React
-- Tailwind CSS
-- shadcn/ui
-
-### Backend / Data
-
-- Firebase Authentication
-- Firestore
-
-### Other Tools
-
-- date-fns
-- Lucide Icons
-
----
-
-## Installation
+## Installation Instructions
 
 Clone the repository:
 
@@ -124,13 +125,14 @@ NEXT_PUBLIC_FIREBASE_APP_ID=
 
 ---
 
-## Future Improvements
+## Learning Goals
 
-- Workout analytics
-- Training trends and progress tracking
-- Improved mobile UX
-- AI-generated training suggestions
-- Calendar/planning views
+- Learn how to move from an idea to a real-world application with thoughtful planning and architecture
+- Become more confident designing scalable frontend and backend systems
+- Strengthen my understanding of authentication and user data management
+- Improve my ability to create intuitive mobile and desktop experiences
+- Practice making tradeoffs between building quickly and building sustainably
+- Explore how future AI features can be integrated into an application in a meaningful way
 
 ---
 
